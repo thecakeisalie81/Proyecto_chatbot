@@ -74,10 +74,14 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+.spa-image-left{
+  display: grid;
+}
+
 .spa-text {
-  grid-column: 1 / -1;
   text-align: center;
   margin-top: 1rem;
+  align-items: center;
 }
 
 .spa-text h2 {
@@ -93,8 +97,19 @@
   color: #555;
 }
 
+.spa-image-right{
+  display: flex;
+}
+
 @media (max-width: 1024px) {
   .restaurant-grid {
     grid-template-columns: repeat(2, 1fr); 
   }
+  .spa-image-left h2{
+    font-size: 1rem;
+  }
+  .spa-image-left h2{
+    font-size: 0.5rem;
+  }
+
 }

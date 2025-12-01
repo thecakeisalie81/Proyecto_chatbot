@@ -10,9 +10,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import requests
-import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import psycopg2
+from datetime import datetime
+import uuid
 
 
 app = Flask(__name__, static_url_path='', static_folder='.')
@@ -46,6 +47,12 @@ def split_questions(text):
     # Quitar vacíos y limpiar espacios
     return [p.strip() for p in parts if len(p.strip()) > 3]
 
+# ============================================
+# Conexion a postgreeSQL
+conn = psycopg2.connect(database="Hotel", host='localhost', user="postgres", password="1234", port="5432")
+cur = conn.cursor()
+
+# ============================================
 
 # ============================================
 # Chatbot semántico (modelo de comprensión)
@@ -131,6 +138,23 @@ def chat():
     # Si el usuario está en un submenú
     if context.get('submenu'):
         submenu = context['submenu']
+
+        if context.get('intent') == 'reserva_info' and msg.isdigit():
+            idx = int(msg) - 1
+
+            if idx == 1:  
+                return jsonify({
+                    'reply': "Perfecto 😊 Vamos a iniciar tu reserva.",
+                    'source': 'formulario_fecha'
+                })
+        
+        if context.get('intent') == 'quejas' and msg.isdigit():
+            return jsonify({
+                'reply': "Vamos a registrar tu queja.",
+                'source': "formulario_queja"
+            })
+
+
         if msg.isdigit():
             idx = int(msg) - 1
             if 0 <= idx < len(submenu):
@@ -173,6 +197,25 @@ def chat():
                 'source': 'confirmacion'
             })
 
+    # Detectar si el usuario quiere hacer una reserva
+    if any(p in msg for p in ["reservar", "quiero hacer una reserva", "hacer una reserva", "quiero reservar", "reserva"]):
+        return jsonify({
+            'reply': "Perfecto 😊 Necesito algunos datos para ayudarte con tu reserva.",
+            'source': 'formulario_fecha'
+    })
+    
+    # Detectar si el usuario quiere hacer una queja
+    if any(p in msg for p in [
+        "queja", "quejas", "poner una queja", "hacer una queja",
+        "quiero quejarme", "reclamo", "reclamos", "reportar un problema",
+        "hacer un reclamo", "reclamar", "reclamación", "problema", "Quiero reportar un problema"
+    ]):
+        return jsonify({
+            'reply': "Perfecto 😟 Necesito algunos datos para ayudarte con tu queja.",
+            'source': "formulario_queja"
+        })
+
+
 
     # Si elige una opción del menú principal
     if msg in MAIN_MENU:
@@ -181,6 +224,13 @@ def chat():
         USER_CONTEXT[session_id] = {"intent": intent, "submenu": items}
         reply = show_submenu(intent)
         return jsonify({'reply': reply, 'source': 'submenu'})
+
+    if msg == "8":  
+        return jsonify({
+            'reply': "Vamos a registrar tu queja.",
+            'source': "formulario_queja"
+        })
+
 
     
    # Si no coincide con ninguna opción, usa el modelo semántico
@@ -249,6 +299,114 @@ def enviar_contacto():
         return jsonify({'reply': '✅ Gracias por tu mensaje. El personal del hotel te contactará pronto.'})
     else:
         return jsonify({'reply': '❌ Hubo un problema al enviar tu mensaje. Intenta más tarde.'})
+
+def generar_codigo_ticket():
+    try:
+        cur.execute("SELECT codigo_ticket FROM tickets ORDER BY id_ticket DESC LIMIT 1")
+        row = cur.fetchone()
+
+        if row and row[0]:
+            ultimo_num = int(row[0].split('-')[1])
+            nuevo_num = ultimo_num + 1
+        else:
+            nuevo_num = 1
+
+        return f"Res-{nuevo_num:03d}"  
+    except Exception as e:
+        print("❌ Error generando código:", e)
+        return "Res-000"  
+
+def generar_codigo_ticket_queja():
+    try:
+        cur.execute("SELECT codigo_ticket FROM tickets ORDER BY id_ticket DESC LIMIT 1")
+        row = cur.fetchone()
+
+        if row and row[0]:
+            ultimo_num = int(row[0].split('-')[1])
+            nuevo_num = ultimo_num + 1
+        else:
+            nuevo_num = 1
+
+        return f"QJ-{nuevo_num:03d}"  
+    except Exception as e:
+        print("❌ Error generando código:", e)
+        return "QJ-000"  
+
+@app.post("/enviar-queja")
+def enviar_queja():
+    data = request.json
+    nombre = data.get("nombre")
+    correo = data.get("correo")
+    telefono = data.get("telefono")
+    motivo = data.get("motivo")
+
+    print("📩 Nueva reserva recibida:")
+    print(data)
+
+    codigo = generar_codigo_ticket_queja()   
+    estado = "pendiente"
+    fecha_creacion = datetime.now()
+    try:
+        cur.execute("""
+            INSERT INTO tickets (
+                codigo_ticket, nombre_cliente, telefono_cliente, correo_cliente, estado, fecha_creacion, mensaje
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            codigo, nombre, telefono, correo,
+            estado, fecha_creacion, motivo
+        ))
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        print("❌ Error guardando en PostgreSQL:", e)
+
+    # Aquí podrías guardar en DB o enviar correo
+    return jsonify({"reply": f"✔ Gracias {nombre}, tu queja fue registrada."})
+
+
+
+@app.route('/enviar-fecha', methods=['POST'])
+def enviar_fecha():
+    data = request.get_json()
+
+    nombre = data.get('nombre')
+    correo = data.get('correo')
+    numero = data.get('numero')
+    fecha_inicio = data.get('fecha_inicio')
+    fecha_final = data.get('fecha_final')
+
+    print("📩 Nueva reserva recibida:")
+    print(data)
+
+    codigo = generar_codigo_ticket()   
+    estado = "pendiente"
+    fecha_creacion = datetime.now()
+
+    try:
+        cur.execute("""
+            INSERT INTO tickets (
+                codigo_ticket, nombre_cliente, telefono_cliente, correo_cliente,
+                fecha_entrada, fecha_salida, estado, fecha_creacion
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            codigo, nombre, numero, correo,
+            fecha_inicio, fecha_final,
+            estado, fecha_creacion
+        ))
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        print("❌ Error guardando en PostgreSQL:", e)
+
+    return jsonify({
+        'reply': '📅 Tu solicitud de reserva fue enviada correctamente. El personal del hotel te contactará pronto.'
+    })
+
+
 
 #  Endpoints adicionales opcionales (debug/consulta)
 @app.route('/menu', methods=['GET'])
@@ -456,218 +614,6 @@ def admin_import():
         return jsonify({'success': False, 'error': 'JSON inválido'}), 400
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/admin/tickets/pending', methods=['GET'])
-def admin_get_pending_tickets():
-    """Obtiene los tickets pendientes desde la base de datos"""
-    try:
-        import db
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        # Obtener tickets con estado 'pendiente' o 'en_proceso'
-        cur.execute("""
-            SELECT id_ticket, codigo_ticket, nombre_cliente, telefono_cliente, 
-                   correo_cliente, fecha_entrada, fecha_salida, 
-                   estado, fecha_creacion
-            FROM tickets
-            WHERE estado IN ('pendiente', 'En Proceso')
-            ORDER BY fecha_creacion DESC
-        """)
-        
-        rows = cur.fetchall()
-        
-        tickets = []
-        for row in rows:
-            tickets.append({
-                'id_ticket': row[0],
-                'codigo_ticket': row[1],
-                'nombre_cliente': row[2],
-                'telefono_cliente': row[3],
-                'correo_cliente': row[4],
-                'fecha_entrada': row[5].strftime('%Y-%m-%d') if row[5] else None,
-                'fecha_salida': row[6].strftime('%Y-%m-%d') if row[6] else None,
-                'estado': row[7],
-                'fecha_creacion': row[8].strftime('%Y-%m-%d %H:%M:%S') if row[8] else None
-            })
-        
-        conn.close()
-        
-        return jsonify({'success': True, 'tickets': tickets, 'count': len(tickets)})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/admin/tickets/update-status', methods=['POST'])
-def admin_update_ticket_status():
-    """Actualiza el estado de un ticket"""
-    try:
-        import db
-        data = request.get_json()
-        ticket_id = data.get('id_ticket')
-        new_status = data.get('estado')
-        
-        if not ticket_id or not new_status:
-            return jsonify({'success': False, 'error': 'Faltan parámetros requeridos'}), 400
-        
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        # Actualizar el estado del ticket
-        cur.execute("""
-            UPDATE tickets
-            SET estado = %s
-            WHERE id_ticket = %s
-        """, (new_status, ticket_id))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Estado actualizado exitosamente'})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-# ============================================
-# ENDPOINTS DE HABITACIONES
-# ============================================
-
-@app.route('/admin/habitaciones', methods=['GET'])
-def admin_get_habitaciones():
-    """Obtiene todas las habitaciones desde la base de datos"""
-    try:
-        import db
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        cur.execute("""
-            SELECT id_habitacion, numero_habitacion, capacidad, precio_noche, 
-                   estado, descripcion, id_tipo
-            FROM habitaciones
-            ORDER BY numero_habitacion
-        """)
-        
-        rows = cur.fetchall()
-        
-        habitaciones = []
-        for row in rows:
-            habitaciones.append({
-                'id_habitacion': row[0],
-                'numero_habitacion': row[1],
-                'capacidad': row[2],
-                'precio_noche': float(row[3]) if row[3] else 0,
-                'estado': row[4],
-                'descripcion': row[5],
-                'id_tipo': row[6]
-            })
-        
-        conn.close()
-        
-        return jsonify({'success': True, 'habitaciones': habitaciones})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/admin/habitaciones/add', methods=['POST'])
-def admin_add_habitacion():
-    """Agrega una nueva habitación"""
-    try:
-        import db
-        data = request.get_json()
-        
-        required_fields = ['id_habitacion', 'numero_habitacion', 'capacidad', 'precio_noche', 'estado', 'id_tipo']
-        if not all(field in data for field in required_fields):
-            return jsonify({'success': False, 'error': 'Faltan campos requeridos'}), 400
-        
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        cur.execute("""
-            INSERT INTO habitaciones (id_habitacion, numero_habitacion, capacidad, precio_noche, estado, descripcion, id_tipo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (
-            data['id_habitacion'],
-            data['numero_habitacion'],
-            data['capacidad'],
-            data['precio_noche'],
-            data['estado'],
-            data.get('descripcion', ''),
-            data['id_tipo']
-        ))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Habitación agregada exitosamente'})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/admin/habitaciones/update', methods=['POST'])
-def admin_update_habitacion():
-    """Actualiza una habitación existente"""
-    try:
-        import db
-        data = request.get_json()
-        
-        if 'id_habitacion' not in data:
-            return jsonify({'success': False, 'error': 'ID de habitación requerido'}), 400
-        
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        cur.execute("""
-            UPDATE habitaciones
-            SET numero_habitacion = %s, capacidad = %s, precio_noche = %s, 
-                estado = %s, descripcion = %s, id_tipo = %s
-            WHERE id_habitacion = %s
-        """, (
-            data.get('numero_habitacion'),
-            data.get('capacidad'),
-            data.get('precio_noche'),
-            data.get('estado'),
-            data.get('descripcion', ''),
-            data.get('id_tipo'),
-            data['id_habitacion']
-        ))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Habitación actualizada exitosamente'})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/admin/habitaciones/delete', methods=['POST'])
-def admin_delete_habitacion():
-    """Elimina una habitación"""
-    try:
-        import db
-        data = request.get_json()
-        
-        if 'id_habitacion' not in data:
-            return jsonify({'success': False, 'error': 'ID de habitación requerido'}), 400
-        
-        conn = db.get_connection()
-        cur = conn.cursor()
-        
-        cur.execute("""
-            DELETE FROM habitaciones
-            WHERE id_habitacion = %s
-        """, (data['id_habitacion'],))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Habitación eliminada exitosamente'})
-    
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-# ============================================
-# FUNCIONES AUXILIARES
-# ============================================
 
 def save_dataset():
     """Guarda el dataset en el archivo JSON"""
