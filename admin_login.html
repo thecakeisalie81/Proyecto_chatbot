@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Panel de Administrador</title>
+    <link rel="stylesheet" href="/CSS/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🔐</div>
+        <h1>Panel de Administrador</h1>
+        <p>Ingresa tu contraseña para acceder</p>
+        
+        <div id="alert" class="alert"></div>
+
+        <div class="info-box">
+            <strong>Nota:</strong> Esta es una página protegida para administradores. La contraseña por defecto es: <code>admin123</code>
+        </div>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" placeholder="Ingresa la contraseña" required>
+            </div>
+            <button type="submit" class="btn-login">Acceder</button>
+        </form>
+
+        <div class="back-link">
+            <a href="/">← Volver al chatbot</a>
+        </div>
+    </div>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            const alertDiv = document.getElementById('alert');
+
+            try {
+                const response = await fetch('/admin-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('admin-token', result.token);
+                    alertDiv.className = 'alert alert-success';
+                    alertDiv.textContent = '✅ Autenticación exitosa. Redirigiendo...';
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 1000);
+                } else {
+                    alertDiv.className = 'alert alert-error';
+                    alertDiv.textContent = '❌ ' + (result.message || 'Contraseña incorrecta');
+                }
+            } catch (error) {
+                alertDiv.className = 'alert alert-error';
+                alertDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        // Verificar si ya está autenticado
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('admin-token');
+            if (token) {
+                window.location.href = '/admin';
+            }
+        });
+    </script>
+</body>
+</html>

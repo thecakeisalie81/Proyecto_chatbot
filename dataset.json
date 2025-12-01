@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "intent": "saludo",
+    "question": "Hola",
+    "response": "¡Hola! Bienvenido al Hotel Paraíso Azul. ¿En qué puedo ayudarte hoy?",
+    "tags": []
+  },
+  {
+    "id": 2,
+    "intent": "saludo",
+    "question": "Buenos días",
+    "response": "Buenos días, ¿Cómo puedo asistirte?",
+    "tags": []
+  },
+  {
+    "id": 3,
+    "intent": "saludo",
+    "question": "Buenas tardes",
+    "response": "Buenas tardes, ¿Deseas información sobre reservas o servicios?",
+    "tags": []
+  },
+  {
+    "id": 4,
+    "intent": "despedida",
+    "question": "Gracias",
+    "response": "¡Gracias a ti! Si necesitas más información, estaré aquí para ayudarte.",
+    "tags": []
+  },
+  {
+    "id": 5,
+    "intent": "despedida",
+    "question": "Adiós",
+    "response": "¡Hasta luego! Esperamos verte pronto en el Hotel Paraíso Azul.",
+    "tags": []
+  },
+  {
+    "id": 6,
+    "intent": "reserva_info",
+    "question": "¿Cómo puedo hacer una reserva?",
+    "response": "Puedes hacer tu reserva directamente desde nuestra página web o llamando al +506 2222-2222. También puedo mostrarte las habitaciones disponibles.",
+    "tags": ["reserva"]
+  },
+  {
+    "id": 7,
+    "intent": "reserva_info",
+    "question": "Quiero reservar una habitación",
+    "response": "Claro, puedo ayudarte. ¿Para qué fecha deseas hacer la reserva?",
+    "tags": ["reserva"]
+  },
+  {
+    "id": 8,
+    "intent": "reserva_precio",
+    "question": "¿Cuánto cuesta una habitación?",
+    "response": "Los precios varían según el tipo de habitación: estándar $80/noche, suite $150/noche y familiar $200/noche.",
+    "tags": ["precio"]
+  },
+  {
+    "id": 9,
+    "intent": "reserva_cancelacion",
+    "question": "¿Puedo cancelar una reserva?",
+    "response": "Sí, puedes cancelar hasta 48 horas antes de tu llegada sin costo. Pasado ese tiempo se aplicará un cargo del 50%.",
+    "tags": ["cancelacion"]
+  },
+  {
+    "id": 10,
+    "intent": "habitacion_info",
+    "question": "¿Qué tipos de habitaciones tienen?",
+    "response": "Tenemos habitaciones estándar, suites y familiares. Todas incluyen aire acondicionado, Wi-Fi gratuito y televisión por cable.",
+    "tags": ["habitacion"]
+  },
+  {
+    "id": 11,
+    "intent": "habitacion_servicios",
+    "question": "¿Las habitaciones tienen vista al mar?",
+    "response": "Sí, nuestras suites y habitaciones familiares tienen vista directa al mar.",
+    "tags": ["vista"]
+  },
+  {
+    "id": 12,
+    "intent": "checkin_info",
+    "question": "¿A qué hora es el check-in?",
+    "response": "El check-in es a partir de las 2:00 p.m. y el check-out hasta las 11:00 a.m.",
+    "tags": ["checkin"]
+  },
+  {
+    "id": 13,
+    "intent": "checkin_info",
+    "question": "¿Puedo hacer check-in temprano?",
+    "response": "Depende de la disponibilidad. Si llegas antes de las 2:00 p.m., podemos guardar tu equipaje sin problema.",
+    "tags": ["checkin"]
+  },
+  {
+    "id": 14,
+    "intent": "servicios_info",
+    "question": "¿Qué servicios ofrecen?",
+    "response": "Contamos con restaurante, piscina, gimnasio, spa y transporte al aeropuerto.",
+    "tags": ["servicios"]
+  },
+  {
+    "id": 15,
+    "intent": "servicios_info",
+    "question": "¿Tienen restaurante?",
+    "response": "Sí, tenemos restaurante con menú internacional abierto de 6:00 a.m. a 10:00 p.m.",
+    "tags": ["restaurante"]
+  },
+  {
+    "id": 16,
+    "intent": "servicios_info",
+    "question": "¿Tienen piscina?",
+    "response": "Sí, contamos con piscina al aire libre disponible de 8:00 a.m. a 9:00 p.m.",
+    "tags": ["piscina"]
+  },
+  {
+    "id": 17,
+    "intent": "servicios_info",
+    "question": "¿Tienen Wi-Fi?",
+    "response": "Por supuesto, el Wi-Fi es gratuito en todas las áreas del hotel.",
+    "tags": ["wifi"]
+  },
+  {
+    "id": 18,
+    "intent": "ubicacion_info",
+    "question": "¿Dónde está ubicado el hotel?",
+    "response": "Estamos ubicados en Playa Azul, Guanacaste, Costa Rica. Frente al mar, a 10 minutos del centro.",
+    "tags": ["ubicacion"]
+  },
+  {
+    "id": 19,
+    "intent": "ubicacion_contacto",
+    "question": "¿Cuál es el número de teléfono?",
+    "response": "Puedes llamarnos al +506 2222-2222 o escribirnos a reservas@paraisoazul.com.",
+    "tags": ["contacto"]
+  },
+  {
+    "id": 20,
+    "intent": "promociones_info",
+    "question": "¿Tienen promociones?",
+    "response": "Sí. Actualmente tenemos un 10% de descuento para reservas en línea y paquetes románticos para parejas.",
+    "tags": ["promociones"]
+  },
+  {
+    "id": 21,
+    "intent": "mascotas_info",
+    "question": "¿Puedo llevar mascotas?",
+    "response": "Aceptamos mascotas pequeñas con un costo adicional de $20 por noche.",
+    "tags": ["mascotas"]
+  },
+  {
+    "id": 22,
+    "intent": "estacionamiento_info",
+    "question": "¿Tienen parqueo?",
+    "response": "Sí, ofrecemos estacionamiento gratuito para nuestros huéspedes.",
+    "tags": ["parqueo"]
+  },
+  {
+    "id": 23,
+    "intent": "transporte_info",
+    "question": "¿Tienen transporte al aeropuerto?",
+    "response": "Sí, ofrecemos transporte privado desde y hacia el aeropuerto por $30.",
+    "tags": ["transporte"]
+  },
+  {
+    "id": 24,
+    "intent": "politicas_info",
+    "question": "¿Cuáles son sus políticas de cancelación?",
+    "response": "Puedes cancelar sin costo hasta 48 horas antes del check-in. Si cancelas después, se cobrará el 50%.",
+    "tags": ["politicas"]
+  },
+  {
+    "id": 25,
+    "intent": "politicas_info",
+    "question": "¿Cobran depósito?",
+    "response": "Sí, se solicita un depósito del 20% al momento de confirmar la reserva.",
+    "tags": ["deposito"]
+  },
+  {
+    "id": 26,
+    "intent": "sugerencias",
+    "question": "¿Qué puedo hacer cerca del hotel?",
+    "response": "Puedes disfrutar del surf, paseos en bote, canopy y tours al Parque Nacional Marino Las Baulas.",
+    "tags": ["actividades"]
+  },
+  {
+    "id": 27,
+    "intent": "quejas",
+    "question": "Quiero reportar un problema",
+    "response": "Lamentamos los inconvenientes. Por favor describe el problema y nuestro equipo lo resolverá de inmediato.",
+    "tags": ["soporte"]
+  }
+]

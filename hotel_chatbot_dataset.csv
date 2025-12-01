@@ -1,0 +1,28 @@
+Intent	Question	Response
+saludo	Hola	¡Hola! Bienvenido al Hotel Paraíso Azul. ¿En qué puedo ayudarte hoy?
+saludo	Buenos días	Buenos días , ¿Cómo puedo asistirte?
+saludo	Buenas tardes	Buenas tardes , ¿Deseas información sobre reservas o servicios?
+despedida	Gracias	¡Gracias a ti!  Si necesitas más información, estaré aquí para ayudarte.
+despedida	Adiós	¡Hasta luego! Esperamos verte pronto en el Hotel Paraíso Azul.
+reserva_info	¿Cómo puedo hacer una reserva?	Puedes hacer tu reserva directamente desde nuestra página web o llamando al +506 2222-2222. También puedo mostrarte las habitaciones disponibles.
+reserva_info	Quiero reservar una habitación	Claro, puedo ayudarte. ¿Para qué fecha deseas hacer la reserva?
+reserva_precio	¿Cuánto cuesta una habitación?	Los precios varían según el tipo de habitación: estándar $80/noche, suite $150/noche y familiar $200/noche.
+reserva_cancelacion	¿Puedo cancelar una reserva?	Sí, puedes cancelar hasta 48 horas antes de tu llegada sin costo. Pasado ese tiempo se aplicará un cargo del 50%.
+habitacion_info	¿Qué tipos de habitaciones tienen?	Tenemos habitaciones estándar, suites y familiares. Todas incluyen aire acondicionado, Wi-Fi gratuito y televisión por cable.
+habitacion_servicios	¿Las habitaciones tienen vista al mar?	Sí, nuestras suites y habitaciones familiares tienen vista directa al mar .
+checkin_info	¿A qué hora es el check-in?	El check-in es a partir de las 2:00 p.m. y el check-out hasta las 11:00 a.m.
+checkin_info	¿Puedo hacer check-in temprano?	Depende de la disponibilidad. Si llegas antes de las 2:00 p.m., podemos guardar tu equipaje sin problema.
+servicios_info	¿Qué servicios ofrecen?	Contamos con restaurante, piscina, gimnasio, spa y transporte al aeropuerto.
+servicios_info	¿Tienen restaurante?	Sí , tenemos restaurante con menú internacional abierto de 6:00 a.m. a 10:00 p.m.
+servicios_info	¿Tienen piscina?	Sí , contamos con piscina al aire libre disponible de 8:00 a.m. a 9:00 p.m.
+servicios_info	¿Tienen Wi-Fi?	Por supuesto, el Wi-Fi es gratuito en todas las áreas del hotel.
+ubicacion_info	¿Dónde está ubicado el hotel?	Estamos ubicados en Playa Azul, Guanacaste, Costa Rica. Frente al mar, a 10 minutos del centro.
+ubicacion_contacto	¿Cuál es el número de teléfono?	Puedes llamarnos al +506 2222-2222 o escribirnos a reservas@paraisoazul.com.
+promociones_info	¿Tienen promociones?	Sí . Actualmente tenemos un 10% de descuento para reservas en línea y paquetes románticos para parejas.
+mascotas_info	¿Puedo llevar mascotas?	Aceptamos mascotas pequeñas con un costo adicional de $20 por noche.
+estacionamiento_info	¿Tienen parqueo?	Sí , ofrecemos estacionamiento gratuito para nuestros huéspedes.
+transporte_info	¿Tienen transporte al aeropuerto?	Sí, ofrecemos transporte privado desde y hacia el aeropuerto por $30.
+politicas_info	¿Cuáles son sus políticas de cancelación?	Puedes cancelar sin costo hasta 48 horas antes del check-in. Si cancelas después, se cobrará el 50%.
+politicas_info	¿Cobran depósito?	Sí, se solicita un depósito del 20% al momento de confirmar la reserva.
+sugerencias	¿Qué puedo hacer cerca del hotel?	Puedes disfrutar del surf, paseos en bote, canopy y tours al Parque Nacional Marino Las Baulas.
+quejas	Quiero reportar un problema	Lamentamos los inconvenientes . Por favor describe el problema y nuestro equipo lo resolverá de inmediato.

@@ -1,0 +1,100 @@
+.dining-showcase {
+  padding: 2rem;
+  text-align: center;
+  background-color: #f8f8f8;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.dining-showcase .intro h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.dining-showcase .intro p {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.restaurant-card {
+  background: transparent; 
+  overflow: hidden;
+  text-align: center;
+}
+
+.restaurant-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  display: block;
+  object-fit: cover; 
+  border-radius: 10px;
+}
+
+
+
+.restaurant-card h3 {
+  margin: 0;
+  padding: 1rem;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+
+
+
+.spa-promo {
+  background-color: #f4f4f4;
+  padding: 2rem;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.spa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  padding-bottom: 20px;
+}
+
+.spa-image-left img,
+.spa-image-right img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.spa-text {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.spa-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.spa-text p {
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+@media (max-width: 1024px) {
+  .restaurant-grid {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
