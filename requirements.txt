@@ -3,3 +3,6 @@ flask-cors
 torch
 sentence-transformers
 re
+psycopg2
+uuid
+datetime
